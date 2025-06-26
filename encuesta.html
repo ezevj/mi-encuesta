@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuesta de Valoración Creativa</title>
+    
+    <!-- Tailwind CSS para el diseño -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Diseño Creativo: Estilo "Lluvia de Ideas" */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f7f4;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4d4d8' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        h1, h2 {
+             font-family: 'Patrick Hand', cursive;
+        }
+
+        main#survey-container {
+            background-color: #fff;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+            border-left: 5px solid #ef4444; /* Margen de cuaderno rojo */
+        }
+
+        .survey-step { display: none; }
+        .survey-step.active {
+            display: block;
+            animation: slideInUp 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .question-block {
+            padding: 1.5rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.06);
+            transition: all 0.3s ease;
+        }
+
+        .question-block:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 4px 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Estilo de "Notas Adhesivas" (Post-it) */
+        .post-it-yellow { background-color: #fef9c3; transform: rotate(-1.5deg); }
+        .post-it-pink   { background-color: #fce7f3; transform: rotate(1deg); }
+        .post-it-blue   { background-color: #e0f2fe; transform: rotate(-1deg); }
+
+        .rating-item {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .rating-item:hover {
+            transform: scale(1.15) rotate(5deg);
+        }
+
+        .cta-button {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.08);
+            border-radius: 9999px; /* Botones redondeados */
+            font-weight: 700;
+        }
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <main id="survey-container" class="w-full max-w-2xl">
+        
+        <div class="p-8 md:p-12">
+            <!-- PASO 0: BIENVENIDA -->
+            <div id="step-0" class="survey-step active">
+                <div class="text-center">
+                    <p class="text-xl text-sky-600 mb-2" style="font-family: 'Inter', sans-serif;">Escuela Jardín Número 129</p>
+                    <h1 class="text-5xl text-slate-800 mb-4">¡Nuestra Jornada, tus ideas!</h1>
+                    <p class="text-slate-600 text-lg mb-8">Gracias por participar. Queremos saber qué te pareció el encuentro. ¡Tus respuestas nos ayudan a crecer!</p>
+                    <button onclick="nextStep()" class="cta-button bg-amber-400 text-amber-900 py-3 px-10 text-lg">
+                        ¡A responder!
+                    </button>
+                </div>
+            </div>
+
+            <!-- PASO 1: VALORACIÓN GENERAL -->
+            <div id="step-1" class="survey-step">
+                <h2 class="text-4xl text-slate-700 mb-6">Valoración General</h2>
+                <div class="question-block post-it-yellow">
+                    <label class="block text-lg font-semibold text-slate-700 mb-3">1. La planificación y ejecución del evento fue...</label>
+                    <div class="flex items-center space-x-3" data-question-id="organizacion_evento">
+                        <!-- Las bombillas de calificación se generan con JS -->
+                    </div>
+                </div>
+                <div class="question-block post-it-pink">
+                    <label class="block text-lg font-semibold text-slate-700 mb-3">2. Los temas tratados fueron...</label>
+                     <div class="flex items-center space-x-3" data-question-id="relevancia_contenidos"></div>
+                </div>
+                <div class="question-block post-it-blue">
+                    <label class="block text-lg font-semibold text-slate-700 mb-3">3. Los recursos (materiales, tecnología) me parecieron...</label>
+                     <div class="flex items-center space-x-3" data-question-id="recursos_utilizados"></div>
+                </div>
+            </div>
+
+            <!-- PASO 2: INTERACCIÓN Y OPORTUNIDADES -->
+            <div id="step-2" class="survey-step">
+                <h2 class="text-4xl text-slate-700 mb-6">Interacción y Conexiones</h2>
+                <div class="question-block post-it-yellow">
+                    <label class="block text-lg font-semibold text-slate-700 mb-3">4. ¿Qué tan activo/a te sentiste en las actividades?</label>
+                    <div class="flex items-center space-x-3" data-question-id="interaccion_participacion"></div>
+                </div>
+                <div class="question-block post-it-pink">
+                     <label class="block text-lg font-semibold text-slate-700 mb-3">5. ¿Hubo buenos momentos para conectar con otros profes?</label>
+                     <div class="flex items-center space-x-3" data-question-id="oportunidades_networking"></div>
+                </div>
+            </div>
+            
+            <!-- PASO 3: CONCLUSIÓN Y COMENTARIOS -->
+            <div id="step-3" class="survey-step">
+                 <h2 class="text-4xl text-slate-700 mb-6">Ideas Finales</h2>
+                 <div class="question-block post-it-blue">
+                    <label class="block text-lg font-semibold text-slate-700 mb-3">6. Mi satisfacción general con la jornada es...</label>
+                    <div class="flex items-center space-x-3" data-question-id="satisfaccion_general"></div>
+                </div>
+                 <div class="question-block post-it-yellow">
+                     <label for="mejoras_comentarios" class="block text-lg font-semibold text-slate-700 mb-3">7. ¿Qué ideas o sugerencias nos dejas para la próxima?</label>
+                     <textarea id="mejoras_comentarios" name="mejoras_comentarios" placeholder="Ej: ¡Más café! O... me encantaría un taller sobre..." rows="5" class="w-full p-3 bg-transparent border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition"></textarea>
+                </div>
+            </div>
+
+            <!-- PASO 4: PANTALLA FINAL -->
+            <div id="step-4" class="survey-step">
+                 <div class="text-center">
+                     <div id="final-icon-container" class="mb-6 h-16 w-16 mx-auto flex items-center justify-center"></div>
+                    <h1 id="final-title" class="text-5xl text-slate-800 mb-2">¡Gracias por tus ideas!</h1>
+                    <p id="final-message" class="text-slate-600 text-lg mb-8">Tus respuestas ya están guardadas. ¡Nos vemos en la próxima jornada!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- BARRA DE PROGRESO Y NAVEGACIÓN -->
+        <footer id="survey-footer" class="bg-slate-100 p-4" style="display: none; border-top: 1px solid #e2e8f0;">
+            <div class="flex items-center justify-between">
+                <button onclick="prevStep()" class="cta-button bg-white text-slate-700 py-2 px-6 border border-slate-300">Atrás</button>
+                <div class="flex-grow mx-4">
+                    <div class="w-full bg-slate-200 rounded-full h-3">
+                      <div id="progress-bar" class="bg-gradient-to-r from-amber-400 to-pink-500 h-3 rounded-full" style="width: 0%; transition: width 0.5s ease;"></div>
+                    </div>
+                </div>
+                <button id="next-btn" onclick="nextStep()" class="cta-button bg-sky-500 text-white py-2 px-6">Siguiente</button>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        // --- CONFIGURACIÓN ---
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxhqkmqkxIP9mOB9hbMHUBa8u013g33K9A-MYEP5acn4vRoC5nv822H4KaPN0ljZ5ns/exec';
+        const totalSteps = 4;
+        let currentStep = 0;
+        const surveyData = {};
+        const steps = document.querySelectorAll('.survey-step');
+        const progressBar = document.getElementById('progress-bar');
+        const surveyFooter = document.getElementById('survey-footer');
+        const prevBtn = surveyFooter.querySelector('button:first-child');
+        const nextBtn = surveyFooter.querySelector('button:last-child');
+        
+        // --- SVG de la Bombilla ---
+        const lightbulbSVG = (filled = false) => `
+            <svg class="w-8 h-8 rating-item" viewBox="0 0 24 24" fill="${filled ? '#facc15' : 'none'}" stroke="${filled ? '#facc15' : '#9ca3af'}" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.311a7.5 7.5 0 01-7.5 0c-1.421-.664-2.5-2.11-2.5-3.812V9.75a7.5 7.5 0 0114.98-1.25c.01.05.01.1.01.15v3.188c0 1.703-1.079 3.148-2.5 3.812z" />
+            </svg>
+        `;
+
+        function renderRatingItems() {
+            document.querySelectorAll('[data-question-id]').forEach(container => {
+                container.innerHTML = '';
+                for (let i = 1; i <= 5; i++) {
+                    const item = document.createElement('div');
+                    item.innerHTML = lightbulbSVG();
+                    item.onclick = () => rateItem(item, i, container.dataset.questionId);
+                    container.appendChild(item);
+                }
+            });
+        }
+        
+        function rateItem(selectedEl, rating, questionId) {
+            const container = selectedEl.parentElement;
+            const items = container.querySelectorAll('svg');
+            items.forEach((svg, index) => {
+                svg.outerHTML = lightbulbSVG(index < rating);
+            });
+            surveyData[questionId] = rating;
+        }
+
+        function showStep(stepIndex) {
+            steps.forEach((step, index) => step.classList.toggle('active', index === stepIndex));
+            updateUI();
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                if (collectStepData()) {
+                    currentStep++;
+                    showStep(currentStep);
+                }
+            }
+        }
+        
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+
+        function updateUI() {
+            surveyFooter.style.display = (currentStep === 0 || currentStep === totalSteps) ? 'none' : 'flex';
+            if (prevBtn) prevBtn.disabled = currentStep <= 1;
+            if (prevBtn) prevBtn.classList.toggle('opacity-50', prevBtn.disabled);
+            if (nextBtn) nextBtn.textContent = (currentStep === totalSteps - 1) ? 'Finalizar' : 'Siguiente';
+            const progressPercentage = (currentStep > 0) ? ((currentStep) / (totalSteps - 1)) * 100 : 0;
+            if (progressBar) progressBar.style.width = `${progressPercentage}%`;
+            if (currentStep === totalSteps) sendData();
+        }
+        
+        function sendData() {
+            const finalTitle = document.getElementById('final-title');
+            const finalMessage = document.getElementById('final-message');
+            const iconContainer = document.getElementById('final-icon-container');
+
+            finalTitle.textContent = 'Registrando...';
+            iconContainer.innerHTML = `<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-500"></div>`;
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(surveyData),
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.result === 'success') {
+                    iconContainer.innerHTML = `<svg class="h-16 w-16 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+                    finalTitle.textContent = '¡Gracias por tus ideas!';
+                    finalMessage.textContent = 'Tus respuestas ya están guardadas.';
+                } else { throw new Error(data.error); }
+            })
+            .catch(error => {
+                iconContainer.innerHTML = `<svg class="h-16 w-16 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>`;
+                finalTitle.textContent = '¡Oops! Algo salió mal';
+                finalMessage.textContent = 'No pudimos registrar tus respuestas.';
+            });
+        }
+
+        function collectStepData() {
+            const activeStep = steps[currentStep];
+            if (!activeStep) return true;
+            const textareas = activeStep.querySelectorAll('textarea');
+            textareas.forEach(textarea => {
+                if (textarea.value.trim() !== '') { surveyData[textarea.name] = textarea.value.trim(); }
+            });
+            return true;
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            renderRatingItems();
+            showStep(currentStep);
+        });
+    </script>
+</body>
+</html>
